@@ -34,7 +34,7 @@ namespace OpenTrace
         public MainForm()
         {
             Title = Resources.APPTITLE;
-            MinimumSize = new Size(1280, 720);
+            MinimumSize = new Size(960, 720);
 
             // 创建菜单项
             var newWindowCommand = new Command { MenuText = Resources.NEW, ToolBarText = Resources.NEW_WINDOW_TEXT, Shortcut = Application.Instance.CommonModifier | Keys.N };
