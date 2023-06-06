@@ -25,7 +25,8 @@ namespace OpenTrace
                 if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "zh-CN")
                 {
                     UserSettings.mapProvider = "google"; 
-                    UserSettings.ttl_time = "100";
+                    UserSettings.ttl_time = "50";
+                    UserSettings.send_time = "50";
                 }
                 else
                 {
