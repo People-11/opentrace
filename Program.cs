@@ -24,7 +24,8 @@ namespace OpenTrace
                 // 本地化地图供应商设置
                 if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "zh-CN")
                 {
-                    UserSettings.mapProvider = "baidu"; 
+                    UserSettings.mapProvider = "google"; 
+                    UserSettings.ttl_time = "100";
                 }
                 else
                 {
