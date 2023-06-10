@@ -32,12 +32,21 @@ namespace NextTrace
             ExitCode = exitCode;
         }
     }
+    enum AppStatus
+    {
+        Init,
+        Start,
+        Quit
+    }
     internal class NextTraceWrapper
     {
         private Process _process;
+        public AppStatus Status { get; set; } = AppStatus.Init;
+        public event EventHandler AppStart;
         public event EventHandler<AppQuitEventArgs> AppQuit;
         public event EventHandler<ExceptionalOutputEventArgs> ExceptionalOutput;
         private string nexttracePath;
+        private int errorOutputCount = 0;
         public ObservableCollection<TracerouteResult> Output { get; } = new ObservableCollection<TracerouteResult>();
 
         public NextTraceWrapper()
@@ -148,6 +157,7 @@ namespace NextTrace
                 if (UserSettings.IPInfoToken != "") _process.StartInfo.EnvironmentVariables.Add("NEXTTRACE_IPINFO_TOKEN", UserSettings.IPInfoToken);
                 if (UserSettings.ChunZhenEndpoint != "") _process.StartInfo.EnvironmentVariables.Add("NEXTTRACE_CHUNZHENURL", UserSettings.ChunZhenEndpoint);
                 if (UserSettings.LeoMoeAPI_HOSTPORT != "") _process.StartInfo.EnvironmentVariables.Add("NEXTTRACE_HOSTPORT", UserSettings.LeoMoeAPI_HOSTPORT);
+                if (UserSettings.NextTraceProxy != "") _process.StartInfo.EnvironmentVariables.Add("NEXTTRACE_PROXY", UserSettings.NextTraceProxy);
 
                 if (MTRMode) // 添加环境变量让NextTrace进入持续追踪模式
                     _process.StartInfo.EnvironmentVariables.Add("NEXTTRACE_UNINTERRUPTED", "1");
@@ -157,7 +167,7 @@ namespace NextTrace
                 {
                     if (e.Data != null)
                     {
-                        Debug.Print(e.Data);
+                        // Debug.Print(e.Data);
                         // 去除输出中的控制字符
                         Regex formatCleanup = new Regex(@"(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]");
                         string line = formatCleanup.Replace(e.Data, "");
@@ -174,6 +184,14 @@ namespace NextTrace
                             if (line.StartsWith("IP Geo Data Provider")) return;
                             if (line.StartsWith("[NextTrace API]")) return;
                             ExceptionalOutput?.Invoke(this, new ExceptionalOutputEventArgs(false, line));
+                            if (errorOutputCount < 100)
+                            {
+                                errorOutputCount++;
+                            }
+                            else
+                            {
+                                Kill(); // 错误输出过多，强制结束
+                            }
                         }
                     }
                 };
@@ -181,15 +199,30 @@ namespace NextTrace
                 {
                     if (e.Data != null)
                     {
-                        Debug.Print(e.Data);
+                        //Debug.Print(e.Data);
                         ExceptionalOutput?.Invoke(this, new ExceptionalOutputEventArgs(true, e.Data));
+                        if (errorOutputCount < 100)
+                        {
+                            errorOutputCount++;
+                        }
+                        else
+                        {
+                            Kill(); // 错误输出过多，强制结束
+                        }
                     }
                 };
+                _process.Exited += (sender, e) =>
+                {
+                    Debug.Print("Exited");
+                    Status = AppStatus.Quit;
+                    AppQuit?.Invoke(this, new AppQuitEventArgs(_process.ExitCode));
+                };
+                _process.EnableRaisingEvents = true;
                 _process.Start();
                 _process.BeginOutputReadLine();
                 _process.BeginErrorReadLine();
-                _process.WaitForExit();
-                AppQuit?.Invoke(this, new AppQuitEventArgs(_process.ExitCode));
+                Status = AppStatus.Start;
+                AppStart?.Invoke(this, null);
             });
         }
         private TracerouteResult ProcessLine(string line)
@@ -265,6 +298,7 @@ namespace NextTrace
             if (UserSettings.no_rdns)
                 finalArgs.Add("--no-rdns");
             finalArgs.Add(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("zh") ? "--language cn" : "--language en");
+            finalArgs.Add(UserSettings.arguments);
             finalArgs.AddRange(extraArgs);
             Debug.Print(String.Join(" ", finalArgs));
             return String.Join(" ", finalArgs);
@@ -276,9 +310,9 @@ namespace NextTrace
                 if (_process != null && !_process.HasExited)
                     _process.Kill();
             }
-            catch
+            catch (Exception ex)
             {
-                // 无视，可能还没启动
+                Debug.Print(ex.Message);
             }
         }
 
