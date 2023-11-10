@@ -88,6 +88,16 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 NextTrace needs certain types (11 and 3) of ICMP messages to fully trace routes. But Windows firewall blocks these ICMP by default, causing only the last hop to be displayed.
+        ///Would you like to add a firewall rule to allow needed ICMP for NextTrace? 的本地化字符串。
+        /// </summary>
+        public static string ASK_ADD_ICMP_FIREWALL_RULE {
+            get {
+                return ResourceManager.GetString("ASK_ADD_ICMP_FIREWALL_RULE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 (Auto Detect) 的本地化字符串。
         /// </summary>
         public static string AUTO_DETECT {
@@ -177,6 +187,25 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Copy  的本地化字符串。
+        /// </summary>
+        public static string COPY {
+            get {
+                return ResourceManager.GetString("COPY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Custom DNS Resolvers
+        ///(DNS / DoH Supported) 的本地化字符串。
+        /// </summary>
+        public static string CUSTOM_DNS_RESOLVERS {
+            get {
+                return ResourceManager.GetString("CUSTOM_DNS_RESOLVERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Disabled 的本地化字符串。
         /// </summary>
         public static string DISABLE_IPGEO {
@@ -191,6 +220,33 @@ namespace OpenTrace.Properties {
         public static string DST_PORT_INIT_SEQ {
             get {
                 return ResourceManager.GetString("DST_PORT_INIT_SEQ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Host or IP cannot be empty 的本地化字符串。
+        /// </summary>
+        public static string EMPTY_HOSTNAME_MSGBOX {
+            get {
+                return ResourceManager.GetString("EMPTY_HOSTNAME_MSGBOX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Enable offline database Ip2region (ip2region.db) 的本地化字符串。
+        /// </summary>
+        public static string ENABLE_IP2REGION {
+            get {
+                return ResourceManager.GetString("ENABLE_IP2REGION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Enable offline database IPInfo (ipinfoLocal.mmdb) 的本地化字符串。
+        /// </summary>
+        public static string ENABLE_IPINFOLOCAL {
+            get {
+                return ResourceManager.GetString("ENABLE_IPINFOLOCAL", resourceCulture);
             }
         }
         
@@ -276,6 +332,15 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Failed to add firewall rules. 的本地化字符串。
+        /// </summary>
+        public static string FAILED_TO_ADD_RULES {
+            get {
+                return ResourceManager.GetString("FAILED_TO_ADD_RULES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 File 的本地化字符串。
         /// </summary>
         public static string FILE {
@@ -334,11 +399,29 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Grid Height Ratio 的本地化字符串。
+        /// </summary>
+        public static string GRID_SIZE_RATIO {
+            get {
+                return ResourceManager.GetString("GRID_SIZE_RATIO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Help 的本地化字符串。
         /// </summary>
         public static string HELP {
             get {
                 return ResourceManager.GetString("HELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Hide the prompt to add firewall rules 的本地化字符串。
+        /// </summary>
+        public static string HIDE_ADD_FIREWALL_PROMPT {
+            get {
+                return ResourceManager.GetString("HIDE_ADD_FIREWALL_PROMPT", resourceCulture);
             }
         }
         
@@ -379,7 +462,16 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Language 的本地化字符串。
+        ///   查找类似 IPInfo Token (Optional) 的本地化字符串。
+        /// </summary>
+        public static string IPINFO_TOKEN {
+            get {
+                return ResourceManager.GetString("IPINFO_TOKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Language (语言) 的本地化字符串。
         /// </summary>
         public static string LANGUAGE {
             get {
@@ -502,6 +594,24 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 OpenTrace requires the NextTrace utility to function properly. This executable is currently missing.
+        ///Please download NextTrace and set the permissions as follows:
+        ///
+        ///sudo xattr -r -d com.apple.quarantine /path/to/nexttrace
+        ///sudo chown root:admin /path/to/nexttrace
+        ///sudo chmod +sx /path/to/nexttrace
+        ///
+        ///And specify the path in the settings.
+        ///
+        ///Would you like to download the NextTrace utility now? 的本地化字符串。
+        /// </summary>
+        public static string MISSING_COMP_TEXT_MACOS {
+            get {
+                return ResourceManager.GetString("MISSING_COMP_TEXT_MACOS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 NextTrace could not be found in &quot;{0}&quot;. 的本地化字符串。
         /// </summary>
         public static string MISSING_SPECIFIED_COMP {
@@ -574,6 +684,16 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Some data sources can only be selected after setting up an API endpoint/token.
+        ///To use an offline database, please refer to the NextTrace documentation to set it up. 的本地化字符串。
+        /// </summary>
+        public static string OTHER_DATABASE_TIPS {
+            get {
+                return ResourceManager.GetString("OTHER_DATABASE_TIPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Packet Group Interval 的本地化字符串。
         /// </summary>
         public static string PACKET_GROUP_INTERVAL {
@@ -597,6 +717,33 @@ namespace OpenTrace.Properties {
         public static string PARALLEL_REQ {
             get {
                 return ResourceManager.GetString("PARALLEL_REQ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 LeoMoeAPI PoW Provider 的本地化字符串。
+        /// </summary>
+        public static string POW_PROVIDER {
+            get {
+                return ResourceManager.GetString("POW_PROVIDER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 api.leo.moe (Default) 的本地化字符串。
+        /// </summary>
+        public static string POW_PROVIDER_LEOMOE {
+            get {
+                return ResourceManager.GetString("POW_PROVIDER_LEOMOE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Nya Labs (China Mainland Optimized) 的本地化字符串。
+        /// </summary>
+        public static string POW_PROVIDER_SAKURA {
+            get {
+                return ResourceManager.GetString("POW_PROVIDER_SAKURA", resourceCulture);
             }
         }
         
@@ -655,7 +802,7 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Some settings may require a restart to take effect 的本地化字符串。
+        ///   查找类似 Some settings will not be applied before the application is restarted 的本地化字符串。
         /// </summary>
         public static string RESTART_TO_APPLY {
             get {
@@ -750,6 +897,15 @@ namespace OpenTrace.Properties {
         public static string STOP {
             get {
                 return ResourceManager.GetString("STOP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 System DNS 的本地化字符串。
+        /// </summary>
+        public static string SYSTEM_DNS_RESOLVER {
+            get {
+                return ResourceManager.GetString("SYSTEM_DNS_RESOLVER", resourceCulture);
             }
         }
         

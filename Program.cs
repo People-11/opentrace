@@ -2,8 +2,10 @@
 using Eto.Drawing;
 using Eto.Forms;
 using System;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 
 namespace OpenTrace
@@ -15,25 +17,26 @@ namespace OpenTrace
         {
             UserSettings.LoadSettings();
             
-            if (UserSettings.language != "")
+            if (UserSettings.language != "" && UserSettings.language != null)
             {
                 System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo(UserSettings.language);
             }
-            if(UserSettings.mapProvider == "")
-            {
-                // 本地化地图供应商设置
-                if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "zh-CN")
-                {
-                    UserSettings.mapProvider = "google"; 
-                    UserSettings.ttl_time = "50";
-                    UserSettings.send_time = "50";
-                }
-                else
-                {
-                    UserSettings.mapProvider = "google";
-                }
-            }
             
+            // 本地化设置
+            if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "zh-CN" && TimeZoneInfo.Local.Id == "China Standard Time")
+            {
+                if (UserSettings.mapProvider == "" && UserSettings.mapProvider != null) UserSettings.mapProvider = "baidu";
+                if (UserSettings.POWProvider == "" && UserSettings.POWProvider != null) UserSettings.POWProvider = "sakura";
+            }
+            else
+            {
+                if (UserSettings.mapProvider == "" && UserSettings.mapProvider != null) UserSettings.mapProvider = "google";
+                if (UserSettings.POWProvider == "" && UserSettings.POWProvider != null) UserSettings.POWProvider = "api.leo.moe";
+            }
+
+            UserSettings.ttl_time = "50";
+            UserSettings.send_time = "50";
+
             new Application(Eto.Platform.Detect).Run(new MainForm());
         }
     }

@@ -10,8 +10,13 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 using System.Linq;
-using Advexp;
 using System.Collections.Generic;
+using System.ComponentModel;
+using Ae.Dns.Client;
+using Ae.Dns.Protocol;
+using System.Threading.Tasks;
+using System.Net.Sockets;
+using Ae.Dns.Protocol.Records;
 
 namespace OpenTrace
 {
@@ -19,7 +24,6 @@ namespace OpenTrace
     {
         private ObservableCollection<TracerouteHop> tracerouteResultCollection = new ObservableCollection<TracerouteHop>();
         private static NextTraceWrapper CurrentInstance { get; set; }
-        private static double gridSizePercentage = 0.5;
         private ComboBox HostInputBox;
         private GridView tracerouteGridView;
         private CheckBox MTRMode;
@@ -27,6 +31,7 @@ namespace OpenTrace
         private DropDown ResolvedIPSelection;
         private DropDown dataProviderSelection;
         private DropDown protocolSelection;
+        private DropDown dnsResolverSelection;
         private Button startTracerouteButton;
         private bool gridResizing = false;
         private bool appForceExiting = false;
@@ -52,8 +57,15 @@ namespace OpenTrace
             var aboutCommand = new Command { MenuText = Resources.ABOUT };
             aboutCommand.Executed += (sender, e) => Process.Start(new ProcessStartInfo("https://github.com/Archeb/opentrace") { UseShellExecute = true });
 
-            var preferenceCommand = new Command { MenuText = Resources.PREFERENCES };
-            preferenceCommand.Executed += (sender, e) => new PreferencesDialog().ShowModal();
+            var preferenceCommand = new Command { MenuText = Resources.PREFERENCES, Shortcut = Application.Instance.CommonModifier | Keys.Comma };
+            preferenceCommand.Executed += (sender, e) =>
+            {
+                new PreferencesDialog().ShowModal(this);
+                // 关闭设置后刷新 DNS 服务器列表
+                LoadDNSResolvers();
+                // 刷新grid高度大小
+                MainForm_SizeChanged(sender, e);
+            };
 
             // 创建菜单栏
             Menu = new MenuBar
@@ -75,7 +87,7 @@ namespace OpenTrace
             HostInputBox = new ComboBox { Text = "" };
             HostInputBox.KeyDown += HostInputBox_KeyDown;
             HostInputBox.KeyUp += HostInputBox_KeyUp;
-            HostInputBox.TextChanged += HostInputBox_TextChanged;
+            HostInputBox.TextChanged += resolveParamChanged;
             if(UserSettings.traceHistory != null || UserSettings.traceHistory!= "")
             {
                 foreach (string item in UserSettings.traceHistory.Split('\n'))
@@ -110,21 +122,57 @@ namespace OpenTrace
                 Items = {
                     new ListItem{Text = "LeoMoeAPI", Key= ""},
                     new ListItem{Text = "IPInfo", Key = "--data-provider IPInfo" },
-                    new ListItem{Text = "IP.SB", Key = "--data-provider IP.SB" },
-                    new ListItem{Text = "Ip2region", Key = "--data-provider Ip2region" },
-                    new ListItem{Text = "IPInsight", Key = "--data-provider IPInsight" },
-                    new ListItem{Text = "IPAPI.com", Key = "--data-provider IPAPI.com" },
-                    new ListItem{Text = "IPInfoLocal", Key = "--data-provider IPInfoLocal" },
-                    new ListItem{Text = "CHUNZHEN", Key = "--data-provider chunzhen"},
+                    new ListItem{Text = "IP.SB ", Key = "--data-provider IP.SB" },
+                    new ListItem{Text = "IP-API.com", Key = "--data-provider IPAPI.com" },
                     new ListItem{Text = Resources.DISABLE_IPGEO, Key = "--data-provider disable-geoip"}
                 },
                 SelectedIndex = 0,
                 ToolTip = Resources.IP_GEO_DATA_PROVIDER
             };
 
+            if (UserSettings.ChunZhenEndpoint != "") dataProviderSelection.Items.Add(new ListItem { Text = "CHUNZHEN", Key = "--data-provider chunzhen" });
+            if (UserSettings.IPInsightToken != "") dataProviderSelection.Items.Add(new ListItem { Text = "IPInsight", Key = "--data-provider IPInsight" });
+            if (UserSettings.enable_ip2region == true) dataProviderSelection.Items.Add(new ListItem { Text = "Ip2region", Key = "--data-provider Ip2region" });
+            if (UserSettings.enable_ipinfolocal == true) dataProviderSelection.Items.Add(new ListItem { Text = "IPInfoLocal", Key = "--data-provider IPInfoLocal" });
+
+            dnsResolverSelection = new DropDown();
+            dnsResolverSelection.SelectedKeyChanged += resolveParamChanged;
+            LoadDNSResolvers();
+
             tracerouteGridView = new GridView { DataStore = tracerouteResultCollection };
             tracerouteGridView.MouseUp += Dragging_MouseUp;
             tracerouteGridView.SelectedRowsChanged += TracerouteGridView_SelectedRowsChanged;
+            var copyIPCommand = new Command { MenuText = Resources.COPY + "IP" };
+            var copyGeolocationCommand = new Command { MenuText = Resources.COPY + Resources.GEOLOCATION };
+            var copyHostnameCommand = new Command { MenuText = Resources.COPY + Resources.HOSTNAME };
+            tracerouteGridView.ContextMenu = new ContextMenu
+            {
+                Items = {
+                    copyIPCommand,
+                    copyGeolocationCommand,
+                    copyHostnameCommand
+                }
+            };
+            copyIPCommand.Executed += (sender, e) =>
+            {
+                Clipboard.Instance.Text = tracerouteResultCollection[tracerouteGridView.SelectedRow].IP;
+            };
+            copyGeolocationCommand.Executed += (sender, e) =>
+            {
+                if (UserSettings.combineGeoOrg)
+                {
+                    Clipboard.Instance.Text = tracerouteResultCollection[tracerouteGridView.SelectedRow].GeolocationAndOrganization;
+                }
+                else
+                {
+                    Clipboard.Instance.Text = tracerouteResultCollection[tracerouteGridView.SelectedRow].Geolocation;
+                }
+            };
+            copyHostnameCommand.Executed += (sender, e) =>
+            {
+                Clipboard.Instance.Text = tracerouteResultCollection[tracerouteGridView.SelectedRow].Hostname;
+            };
+
             AddGridColumnsTraceroute();
 
             mapWebView = new WebView();
@@ -140,6 +188,8 @@ namespace OpenTrace
             mapWebView.DocumentLoaded += (sender6, e6) => {
                 ResetMap();
             };
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && UserSettings.hideAddICMPFirewallRule != true) tryAddICMPFirewallRule();
 
             // 绑定窗口事件
             SizeChanged += MainForm_SizeChanged;
@@ -167,6 +217,7 @@ namespace OpenTrace
                                         ResolvedIPSelection,
                                         MTRMode,
                                         protocolSelection,
+                                        dnsResolverSelection,
                                         dataProviderSelection,
                                         startTracerouteButton
                                     }
@@ -188,7 +239,56 @@ namespace OpenTrace
             HostInputBox.Focus(); // 自动聚焦输入框
         }
 
-        private void HostInputBox_TextChanged(object sender, EventArgs e)
+        private void LoadDNSResolvers()
+        {
+            dnsResolverSelection.Items.Clear();
+            dnsResolverSelection.Items.Add(new ListItem { Text = Resources.SYSTEM_DNS_RESOLVER, Key = "system" });
+            if (UserSettings.customDNSResolvers != null || UserSettings.customDNSResolvers != "")
+            {
+                string resolvers = UserSettings.customDNSResolvers.Replace("\r", "");
+                foreach (string item in resolvers.Split('\n'))
+                {
+                    string[] resolver = item.Split('#');
+                    IPAddress resolverIP;
+                    if (resolver[0] != "" && (resolver[0].IndexOf("https://") == 0 || IPAddress.TryParse(resolver[0], out resolverIP)))
+                    {
+                        dnsResolverSelection.Items.Add(new ListItem { Text = resolver.Length == 2 ? resolver[1] : resolver[0], Key = resolver[0] });
+                    }
+                }
+            }
+            dnsResolverSelection.SelectedIndex = 0;
+        }
+
+        private void tryAddICMPFirewallRule()
+        {
+            // 提示 Windows 用户添加防火墙规则放行 ICMP 
+            if (MessageBox.Show(Resources.ASK_ADD_ICMP_FIREWALL_RULE, MessageBoxButtons.YesNo, MessageBoxType.Question) == DialogResult.Yes)
+            {
+                // 以管理员权限运行命令
+                var allowIcmp = new Process();
+                allowIcmp.StartInfo.FileName = "cmd.exe";
+                allowIcmp.StartInfo.UseShellExecute = true;
+                allowIcmp.StartInfo.Verb = "runas";
+                allowIcmp.StartInfo.Arguments = "/c \"netsh advfirewall firewall add rule name=\"\"\"All ICMP v4 (NextTrace)\"\"\" dir=in action=allow protocol=icmpv4:any,any && netsh advfirewall firewall add rule name=\"\"\"All ICMP v6 (NextTrace)\"\"\" dir=in action=allow protocol=icmpv6:any,any\"";
+                try
+                {
+                    allowIcmp.Start();
+                    UserSettings.hideAddICMPFirewallRule = true;
+                    UserSettings.SaveSettings();
+                }
+                catch (Win32Exception)
+                {
+                    MessageBox.Show(Resources.FAILED_TO_ADD_RULES, MessageBoxType.Error);
+                }
+            }
+            else
+            {
+                UserSettings.hideAddICMPFirewallRule = true;
+                UserSettings.SaveSettings();
+            }
+        }
+
+        private void resolveParamChanged(object sender, EventArgs e)
         {
             // 如果文本框被修改，则隐藏 DNS 解析选择框
             if (ResolvedIPSelection.Visible)
@@ -223,6 +323,10 @@ namespace OpenTrace
             {
                 enterPressed = false;
                 StartTracerouteButton_Click(sender, e);
+            } else if (e.Key == Keys.Enter && RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // 似乎是上游兼容性问题
+                StartTracerouteButton_Click(sender, e);
             }
         }
 
@@ -251,11 +355,11 @@ namespace OpenTrace
             catch (FileNotFoundException)
             {
                 // 未能在默认搜寻目录中找到NextTrace，询问是否下载 NextTrace
-                DialogResult dr = MessageBox.Show(Resources.MISSING_COMP_TEXT,
-                     Resources.MISSING_COMP, MessageBoxButtons.YesNo);
+                DialogResult dr = MessageBox.Show(RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? Resources.MISSING_COMP_TEXT_MACOS : Resources.MISSING_COMP_TEXT ,
+                 Resources.MISSING_COMP, MessageBoxButtons.YesNo);
                 if (dr == DialogResult.Yes)
                 {
-                    Process.Start(new ProcessStartInfo("https://github.com/nxtrace/Ntrace-V1/releases/tag/v1.1.7-2") { UseShellExecute = true });
+                    Process.Start(new ProcessStartInfo("https://github.com/nxtrace/Ntrace-V1/releases/") { UseShellExecute = true });
                 }
                 CurrentInstance = null;
                 return;
@@ -265,6 +369,12 @@ namespace OpenTrace
                 // 未能在指定的位置找到 NextTrace
                 MessageBox.Show(string.Format(Resources.MISSING_SPECIFIED_COMP, exception.Message), Resources.MISSING_COMP);
 
+                CurrentInstance = null;
+                return;
+            }
+            if(HostInputBox.Text == "")
+            {
+                MessageBox.Show(Resources.EMPTY_HOSTNAME_MSGBOX);
                 CurrentInstance = null;
                 return;
             }
@@ -308,7 +418,7 @@ namespace OpenTrace
                         }
                         // 需要域名解析
                         Title = Resources.APPTITLE + ": " + HostInputBox.Text;
-                        IPAddress[] resolvedAddresses = Dns.GetHostAddresses(HostInputBox.Text);
+                        IPAddress[] resolvedAddresses = ResolveHost(HostInputBox.Text);
                         if (resolvedAddresses.Length > 1)
                         {
                             ResolvedIPSelection.Items.Clear();
@@ -370,6 +480,65 @@ namespace OpenTrace
             CurrentInstance.Run(readyToUseIP, (bool)MTRMode.Checked, dataProviderSelection.SelectedKey, protocolSelection.SelectedKey);
             
         }
+
+        private IPAddress[] ResolveHost(string host)
+        {
+            string resolver = dnsResolverSelection.SelectedKey;
+            if(resolver == "system")
+            {
+                // 使用系统解析
+                return Dns.GetHostAddresses(host);
+            }else if (resolver.IndexOf("https://") == 0)
+            {
+                // 使用DoH
+                var httpClient = new System.Net.Http.HttpClient
+                {
+                    BaseAddress = new Uri(resolver)
+                };
+                IDnsClient dnsClient = new DnsHttpClient(httpClient);
+                DnsMessage result = Task.Run(() => dnsClient.Query(DnsQueryFactory.CreateQuery(host))).Result;
+                if(result.Answers.Count == 0)
+                {
+                    throw new SocketException();
+                }
+                else
+                {
+                    List<IPAddress> addressList = new List<IPAddress>();
+                    foreach (DnsResourceRecord answer in result.Answers)
+                    {
+                        if (answer.Type == Ae.Dns.Protocol.Enums.DnsQueryType.A || answer.Type == Ae.Dns.Protocol.Enums.DnsQueryType.AAAA)
+                        {
+                            addressList.Add(((DnsIpAddressResource)answer.Resource).IPAddress);
+                        }
+                    }
+                    return addressList.ToArray();
+                }
+            }
+            else
+            {
+                // 使用传统 DNS
+                IDnsClient dnsClient = new DnsUdpClient(IPAddress.Parse(resolver));
+                DnsMessage result = Task.Run(() => dnsClient.Query(DnsQueryFactory.CreateQuery(host))).Result;
+
+                if (result.Answers.Count == 0)
+                {
+                    throw new SocketException();
+                }
+                else
+                {
+                    List<IPAddress> addressList = new List<IPAddress>();
+                    foreach (DnsResourceRecord answer in result.Answers)
+                    {
+                        if (answer.Type == Ae.Dns.Protocol.Enums.DnsQueryType.A || answer.Type == Ae.Dns.Protocol.Enums.DnsQueryType.AAAA)
+                        {
+                            addressList.Add(((DnsIpAddressResource)answer.Resource).IPAddress);
+                        }
+                    }
+                    return addressList.ToArray();
+                }
+            }
+        }
+
         private void Instance_AppQuit(object sender, AppQuitEventArgs e)
         {
             Application.Instance.InvokeAsync(() =>
@@ -441,6 +610,8 @@ namespace OpenTrace
         {
             gridResizing = false;
             mapWebView.Enabled = true;
+            // save grid size percentage
+            UserSettings.SaveSettings();
         }
 
         private void Dragging_MouseDown(object sender, MouseEventArgs e)
@@ -471,7 +642,7 @@ namespace OpenTrace
                 {
 
                     tracerouteGridView.Height = (int)e.Location.Y - tracerouteGridView.Bounds.Top - 15;
-                    gridSizePercentage = (double)tracerouteGridView.Height / (Height - 75); // 保存比例
+                    UserSettings.gridSizePercentage = (double)tracerouteGridView.Height / (Height - 75); // 保存比例
                 }
             }
         }
@@ -480,7 +651,7 @@ namespace OpenTrace
         {
             int gridHeight;
             int totalHeight = this.Height - 75; // 减去边距和上面的文本框的75px
-            gridHeight = (int)(totalHeight * gridSizePercentage);
+            gridHeight = (int)(totalHeight * UserSettings.gridSizePercentage);
             tracerouteGridView.Height = gridHeight; // 按比例还原高度
         }
         private void UpdateMap(TracerouteResult result)
@@ -490,7 +661,7 @@ namespace OpenTrace
                 // 把 Result 转换为 JSON
                 string resultJson = JsonConvert.SerializeObject(result);
                 // 通过 ExecuteScript 把结果传进去
-                mapWebView.ExecuteScript(@"window.opentrace.addHop(`" + resultJson + "`);");
+                mapWebView.ExecuteScriptAsync(@"window.opentrace.addHop(`" + resultJson + "`);");
             }
             catch (Exception e)
             {

@@ -1,4 +1,4 @@
-name: build-windows
+name: build-macos
 
 on:
   push:
@@ -22,16 +22,12 @@ on:
 jobs:
 
   build:
-
+  
     strategy:
       matrix:
-        runtime: [win-x64]
-        include:
-          - runtime: win-x64
-            artifact_path: .\bin\Wpf\Release\net48\win-x64
-            self_contained: "--no-self-contained"
-
-    runs-on: windows-latest
+        runtime: [osx-x64]
+            
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -43,10 +39,13 @@ jobs:
         
     - name: Build for ${{ matrix.runtime }}
       run: |
-        dotnet build OpenTrace.csproj --runtime ${{ matrix.runtime }} --configuration Release ${{ matrix.self_contained }} -f net48
-        
+        dotnet build OpenTrace.csproj --runtime ${{ matrix.runtime }} --configuration Release --self-contained -f net6.0
+
+    - name: Make tarball
+      run: cd ./bin/Mac64/Release/net6.0/${{ matrix.runtime }} && tar -cvzf OpenTrace_${{ matrix.runtime }}.app.tar.gz OpenTrace.app
+      
     - name: Upload artifact for ${{ matrix.runtime }}
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ matrix.runtime }}
-        path: ${{ matrix.artifact_path }}
+        name: OpenTrace_${{ matrix.runtime }}.app.tar.gz
+        path: ./bin/Mac64/Release/net6.0/${{ matrix.runtime }}/OpenTrace_${{ matrix.runtime }}.app.tar.gz

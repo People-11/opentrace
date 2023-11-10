@@ -78,5 +78,23 @@ namespace OpenTrace
 
         [Setting(Name = "NextTraceProxy", Default = "")]
         public static string NextTraceProxy { get; set; }
+        
+        [Setting(Name = "hideAddICMPFirewallRule", Default = false)]
+        public static bool hideAddICMPFirewallRule { get; set; }
+
+        [Setting(Name = "enable_ip2region", Default = false)]
+        public static bool enable_ip2region { get; set; }
+        
+        [Setting(Name = "enable_ipinfolocal", Default = false)]
+        public static bool enable_ipinfolocal { get; set; }
+        
+        [Setting(Name = "customDNSResolvers", Default = "8.8.8.8#Google DNS\nhttps://cloudflare-dns.com/dns-query#CloudFlare DoH")]
+        public static string customDNSResolvers { get; set; }
+
+        [Setting(Name = "POWProvider", Default = "")]
+        public static string POWProvider { get; set; }
+
+        [Setting(Name = "gridSizePercentage", Default = 0.5)]
+        public static double gridSizePercentage { get; set; }
     }
 }

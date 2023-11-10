@@ -126,6 +126,13 @@
   <data name="APPTITLE" xml:space="preserve">
     <value>OpenTrace</value>
   </data>
+  <data name="ASK_ADD_ICMP_FIREWALL_RULE" xml:space="preserve">
+    <value>NextTrace 需要接收特殊的 ICMP 響應報文來構建完整的 traceroute 信息；但默認情況下，Windows 防火牆會攔截此類消息，導致您只能看到 traceroute 的最後一跳。
+
+您可以點擊“是”來自動添加防火牆規則，也可以點“否”取消這一操作。
+
+若要獲得更多信息，請參考 https://github.com/nxtrace/Ntrace-core/issues/52</value>
+  </data>
   <data name="AUTO_DETECT" xml:space="preserve">
     <value>(留空自動檢測)</value>
   </data>
@@ -147,11 +154,27 @@
   <data name="COMBINE_GEO_ORG" xml:space="preserve">
     <value>把地理位置和組織信息合為一欄</value>
   </data>
+  <data name="COPY" xml:space="preserve">
+    <value>拷貝</value>
+  </data>
+  <data name="CUSTOM_DNS_RESOLVERS" xml:space="preserve">
+    <value>自定義 DNS 解析器
+(支持 UDP / DoH)</value>
+  </data>
   <data name="DISABLE_IPGEO" xml:space="preserve">
     <value>禁用地理位置</value>
   </data>
   <data name="DST_PORT_INIT_SEQ" xml:space="preserve">
     <value>目標端口 / 初始序號</value>
+  </data>
+  <data name="EMPTY_HOSTNAME_MSGBOX" xml:space="preserve">
+    <value>主機或 IP 不能為空</value>
+  </data>
+  <data name="ENABLE_IP2REGION" xml:space="preserve">
+    <value>使用本地 Ip2region 數據庫  (ip2region.db)</value>
+  </data>
+  <data name="ENABLE_IPINFOLOCAL" xml:space="preserve">
+    <value>使用本地 IPInfo 數據庫 (ipinfoLocal.mmdb)</value>
   </data>
   <data name="ERR_MSG" xml:space="preserve">
     <value>錯誤消息</value>
@@ -172,13 +195,16 @@
     <value>異常輸出</value>
   </data>
   <data name="EXE_PATH" xml:space="preserve">
-    <value>可執行文件目錄</value>
+    <value>可執行文件路徑</value>
   </data>
   <data name="EXPORT" xml:space="preserve">
     <value>導出</value>
   </data>
   <data name="EXPORT_TO" xml:space="preserve">
     <value>導出為</value>
+  </data>
+  <data name="FAILED_TO_ADD_RULES" xml:space="preserve">
+    <value>新增防火墻規則失敗</value>
   </data>
   <data name="FILE" xml:space="preserve">
     <value>文件</value>
@@ -192,8 +218,14 @@
   <data name="GEOLOCATION" xml:space="preserve">
     <value>地理位置</value>
   </data>
+  <data name="GRID_SIZE_RATIO" xml:space="preserve">
+    <value>表格高度占比</value>
+  </data>
   <data name="HELP" xml:space="preserve">
     <value>幫助</value>
+  </data>
+  <data name="HIDE_ADD_FIREWALL_PROMPT" xml:space="preserve">
+    <value>不再提示新增防火牆規則</value>
   </data>
   <data name="HIDE_MAP_POPUP" xml:space="preserve">
     <value>隱藏地圖上的信息窗口</value>
@@ -204,11 +236,14 @@
   <data name="HOSTNAME" xml:space="preserve">
     <value>主機名</value>
   </data>
+  <data name="IPINFO_TOKEN" xml:space="preserve">
+    <value>IPInfo Token (可選)</value>
+  </data>
   <data name="IP_GEO_DATA_PROVIDER" xml:space="preserve">
     <value>IP 地理位置數據源</value>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>語言</value>
+    <value>Language (語言)</value>
   </data>
   <data name="LAST" xml:space="preserve">
     <value>當前延遲</value>
@@ -252,6 +287,18 @@
 
 是否現在下載 NextTrace？</value>
   </data>
+  <data name="MISSING_COMP_TEXT_MACOS" xml:space="preserve">
+    <value>OpenTrace 需要 NextTrace 才能正常工作，但未能找到可執行文件。
+請下載 NextTrace 並設置好權限：
+
+sudo xattr -r -d com.apple.quarantine /path/to/nexttrace
+sudo chown root:admin /path/to/nexttrace
+sudo chmod +sx /path/to/nexttrace
+
+然後在設置中指定 NextTrace 路徑。
+
+是否現在下載 NextTrace？</value>
+  </data>
   <data name="MISSING_SPECIFIED_COMP" xml:space="preserve">
     <value>未能在指定的位置 "{0}" 中找到 NextTrace。</value>
   </data>
@@ -273,6 +320,10 @@
   <data name="ORGANIZATION" xml:space="preserve">
     <value>組織</value>
   </data>
+  <data name="OTHER_DATABASE_TIPS" xml:space="preserve">
+    <value>有些數據源只有在設置 API 端點 / Token 後才能選擇；
+ 要使用離線數據庫，請參閱 NextTrace 文檔進行設置。</value>
+  </data>
   <data name="PACKET_GROUP_INTERVAL" xml:space="preserve">
     <value>分組請求間隔</value>
   </data>
@@ -281,6 +332,15 @@
   </data>
   <data name="PARALLEL_REQ" xml:space="preserve">
     <value>並行請求數</value>
+  </data>
+  <data name="POW_PROVIDER" xml:space="preserve">
+    <value>LeoMoeAPI PoW 服務器</value>
+  </data>
+  <data name="POW_PROVIDER_LEOMOE" xml:space="preserve">
+    <value>api.leo.moe (默認)</value>
+  </data>
+  <data name="POW_PROVIDER_SAKURA" xml:space="preserve">
+    <value>Nya Labs (中國大陸優化)</value>
   </data>
   <data name="PREFERENCES" xml:space="preserve">
     <value>設置</value>
@@ -333,6 +393,12 @@
   <data name="STOP" xml:space="preserve">
     <value>停止</value>
   </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SYSTEM_DNS_RESOLVER" xml:space="preserve">
+    <value>系統 DNS</value>
+  </data>
   <data name="TIME_MS" xml:space="preserve">
     <value>時間(ms)</value>
   </data>
@@ -346,6 +412,6 @@
     <value>Windows 暫不支持 TCP/UDP Traceroute</value>
   </data>
   <data name="WORST" xml:space="preserve">
-    <value>最差延遲</value>
+    <value>最大延遲</value>
   </data>
 </root>

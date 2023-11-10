@@ -33,7 +33,7 @@
 											<ListItem Text="正體中文" Key="zh-TW"></ListItem>
 										</DropDown>
 									</TableRow>
-								<TableRow>
+									<TableRow>
 										<Label Text="{x:Static resource:Resources.MAP_PROVIDER}"></Label>
 										<DropDown x:Name="mapProvider" SelectedIndex="0">
 											<ListItem Text="{x:Static resource:Resources.MAP_PROVIDER_BAIDU}" Key="baidu"></ListItem>
@@ -42,6 +42,15 @@
 											<ListItem Text="{x:Static resource:Resources.MAP_PROVIDER_OSM}" Key="openstreetmap"></ListItem>
 											-->
 										</DropDown>
+									</TableRow>
+									<TableRow>
+										<Label Text="{x:Static resource:Resources.CUSTOM_DNS_RESOLVERS}"></Label>
+										<TextArea x:Name="customDNSResolvers"></TextArea>
+									</TableRow>
+									
+									<TableRow>
+										<Label Text="{x:Static resource:Resources.GRID_SIZE_RATIO}"></Label>
+										<NumericStepper x:Name="gridSizePercentage" MaxValue="90" MinValue="10" ></NumericStepper>
 									</TableRow>
 								</TableLayout>
 							</TableRow>
@@ -53,6 +62,9 @@
 							</TableRow>
 							<TableRow>
 								<CheckBox x:Name="hideMapPopup" Text="{x:Static resource:Resources.HIDE_MAP_POPUP}"></CheckBox>
+							</TableRow>
+							<TableRow>
+								<CheckBox x:Name="hideAddICMPFirewallRule" Text="{x:Static resource:Resources.HIDE_ADD_FIREWALL_PROMPT}"></CheckBox>
 							</TableRow>
 							<TableRow ScaleHeight="True"></TableRow>
 						</TableLayout>
@@ -102,28 +114,48 @@
 						</TableLayout>
 					</TabPage>
 					<TabPage Text="API">
-						<TableLayout Padding="10" Spacing="5,5">
-							<TableRow>
-								<Label Text="{x:Static resource:Resources.LEOMOEAPI_HOSTPORT}"></Label>
-								<TextBox x:Name="LeoMoeAPI_HOSTPORT" PlaceholderText="api.leo.moe:443" Text=""></TextBox>
-							</TableRow>
-							<TableRow>
-								<Label Text="{x:Static resource:Resources.NEXTTRACE_PROXY}"></Label>
-								<TextBox x:Name="NextTraceProxy" PlaceholderText="protocol://username:password@host:port" Text=""></TextBox>
-							</TableRow>
-							<TableRow>
-								<Label Text="IPInsight Token"></Label>
-								<TextBox x:Name="IPInsightToken" Text=""></TextBox>
-							</TableRow>
-							<TableRow>
-								<Label Text="IPInfo Token"></Label>
-								<TextBox x:Name="IPInfoToken" Text=""></TextBox>
-							</TableRow>
-							<TableRow>
-								<Label Text="{x:Static resource:Resources.CHUNZHEN_ENDPOINT}"></Label>
-								<TextBox x:Name="ChunZhenEndpoint" PlaceholderText="http://127.0.0.1:2060"></TextBox>
-							</TableRow>
-							<TableRow ScaleHeight="True"></TableRow>
+						<TableLayout Padding="10" Spacing="10,10">
+								<TableRow>
+									<TableLayout Spacing="5,5">
+										<TableRow>
+											<Label Text="{x:Static resource:Resources.LEOMOEAPI_HOSTPORT}"></Label>
+											<TextBox x:Name="LeoMoeAPI_HOSTPORT" Text=""></TextBox>
+										</TableRow>
+										<TableRow>
+											<Label Text="{x:Static resource:Resources.POW_PROVIDER}"></Label>
+											<DropDown x:Name="POWProvider" SelectedIndex="0">
+												<ListItem Text="{x:Static resource:Resources.POW_PROVIDER_LEOMOE}" Key="api.leo.moe"></ListItem>
+												<ListItem Text="{x:Static resource:Resources.POW_PROVIDER_SAKURA}" Key="sakura"></ListItem>
+											</DropDown>
+										</TableRow>
+										<TableRow>
+											<Label Text="{x:Static resource:Resources.NEXTTRACE_PROXY}"></Label>
+											<TextBox x:Name="NextTraceProxy" PlaceholderText="protocol://username:password@host:port" Text=""></TextBox>
+										</TableRow>
+										<TableRow>
+											<Label Text="IPInsight Token"></Label>
+											<TextBox x:Name="IPInsightToken" Text=""></TextBox>
+										</TableRow>
+										<TableRow>
+											<Label Text="{x:Static resource:Resources.IPINFO_TOKEN}"></Label>
+											<TextBox x:Name="IPInfoToken" Text=""></TextBox>
+										</TableRow>
+										<TableRow>
+											<Label Text="{x:Static resource:Resources.CHUNZHEN_ENDPOINT}"></Label>
+											<TextBox x:Name="ChunZhenEndpoint"></TextBox>
+										</TableRow>
+									</TableLayout>
+								</TableRow>
+								<TableRow>
+									<CheckBox x:Name="enable_ip2region" Text="{x:Static resource:Resources.ENABLE_IP2REGION}"></CheckBox>
+								</TableRow>
+								<TableRow>
+									<CheckBox x:Name="enable_ipinfolocal" Text="{x:Static resource:Resources.ENABLE_IPINFOLOCAL}"></CheckBox>
+								</TableRow>
+								<TableRow ScaleHeight="True"></TableRow>
+								<TableRow>
+									<Label Text="{x:Static resource:Resources.OTHER_DATABASE_TIPS}"></Label>
+								</TableRow>
 						</TableLayout>
 					</TabPage>
 

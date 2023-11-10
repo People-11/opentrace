@@ -1,4 +1,4 @@
-name: build-windows
+name: build-linux
 
 on:
   push:
@@ -18,20 +18,19 @@ on:
       - "**/*.csproj"
       - "**/*.resx"
       - ".github/workflows/*.yml"
-
 jobs:
 
   build:
 
     strategy:
       matrix:
-        runtime: [win-x64]
+        runtime: [linux-x64]
         include:
-          - runtime: win-x64
-            artifact_path: .\bin\Wpf\Release\net48\win-x64
-            self_contained: "--no-self-contained"
+          - runtime: linux-x64
+            artifact_path: ./bin/Gtk/Release/net6.0/linux-x64
+            self_contained: "--self-contained"
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -43,10 +42,15 @@ jobs:
         
     - name: Build for ${{ matrix.runtime }}
       run: |
-        dotnet build OpenTrace.csproj --runtime ${{ matrix.runtime }} --configuration Release ${{ matrix.self_contained }} -f net48
-        
+        dotnet build OpenTrace.csproj --runtime ${{ matrix.runtime }} --configuration Release ${{ matrix.self_contained }} -f net6.0
+
+    - name: Make tarball
+      run: cd ${{ matrix.artifact_path }} && chmod +x ./OpenTrace && tar -cvzf ../${{ matrix.runtime }}.tar.gz ./
+      
+
     - name: Upload artifact for ${{ matrix.runtime }}
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ matrix.runtime }}
-        path: ${{ matrix.artifact_path }}
+        name: ${{ matrix.runtime }}.tar.gz
+        path: ./bin/Gtk/Release/net6.0/${{ matrix.runtime }}.tar.gz
+

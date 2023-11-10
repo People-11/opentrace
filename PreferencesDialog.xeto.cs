@@ -33,8 +33,14 @@ namespace OpenTrace
                 if (settingDropDown != null)
                 {
                     settingDropDown.SelectedKey = (string)setting.GetValue(userSettings, null);
+                }                
+                TextArea settingTextArea = this.FindChild<TextArea>(setting.Name);
+                if (settingTextArea != null)
+                {
+                    settingTextArea.Text = (string)setting.GetValue(userSettings, null);
                 }
             }
+            this.FindChild<NumericStepper>("gridSizePercentage").Value = UserSettings.gridSizePercentage * 100;
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -60,7 +66,13 @@ namespace OpenTrace
                 {
                     setting.SetValue(userSettings, settingDropDown.SelectedKey);
                 }
+                TextArea settingTextArea = this.FindChild<TextArea>(setting.Name);
+                if (settingTextArea != null)
+                {
+                    setting.SetValue(userSettings, settingTextArea.Text);
+                }
             }
+            UserSettings.gridSizePercentage = this.FindChild<NumericStepper>("gridSizePercentage").Value / 100;
             UserSettings.SaveSettings();
             Close();
         }

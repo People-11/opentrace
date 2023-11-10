@@ -126,6 +126,10 @@
   <data name="APPTITLE" xml:space="preserve">
     <value>OpenTrace</value>
   </data>
+  <data name="ASK_ADD_ICMP_FIREWALL_RULE" xml:space="preserve">
+    <value>NextTrace needs certain types (11 and 3) of ICMP messages to fully trace routes. But Windows firewall blocks these ICMP by default, causing only the last hop to be displayed.
+Would you like to add a firewall rule to allow needed ICMP for NextTrace?</value>
+  </data>
   <data name="AUTO_DETECT" xml:space="preserve">
     <value>(Auto Detect)</value>
   </data>
@@ -151,11 +155,27 @@
   <data name="COMBINE_GEO_ORG" xml:space="preserve">
     <value>Combine Geography and Organization into a single column</value>
   </data>
+  <data name="COPY" xml:space="preserve">
+    <value>Copy </value>
+  </data>
+  <data name="CUSTOM_DNS_RESOLVERS" xml:space="preserve">
+    <value>Custom DNS Resolvers
+(DNS / DoH Supported)</value>
+  </data>
   <data name="DISABLE_IPGEO" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="DST_PORT_INIT_SEQ" xml:space="preserve">
     <value>Destination port / Initial seq</value>
+  </data>
+  <data name="EMPTY_HOSTNAME_MSGBOX" xml:space="preserve">
+    <value>Host or IP cannot be empty</value>
+  </data>
+  <data name="ENABLE_IP2REGION" xml:space="preserve">
+    <value>Enable offline database Ip2region (ip2region.db)</value>
+  </data>
+  <data name="ENABLE_IPINFOLOCAL" xml:space="preserve">
+    <value>Enable offline database IPInfo (ipinfoLocal.mmdb)</value>
   </data>
   <data name="ERR_MSG" xml:space="preserve">
     <value>Error Message</value>
@@ -184,6 +204,9 @@
   <data name="EXPORT_TO" xml:space="preserve">
     <value>Export To</value>
   </data>
+  <data name="FAILED_TO_ADD_RULES" xml:space="preserve">
+    <value>Failed to add firewall rules.</value>
+  </data>
   <data name="FILE" xml:space="preserve">
     <value>File</value>
   </data>
@@ -199,8 +222,14 @@
   <data name="googleMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\javascript\googleMap.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="GRID_SIZE_RATIO" xml:space="preserve">
+    <value>Grid Height Ratio</value>
+  </data>
   <data name="HELP" xml:space="preserve">
     <value>Help</value>
+  </data>
+  <data name="HIDE_ADD_FIREWALL_PROMPT" xml:space="preserve">
+    <value>Hide the prompt to add firewall rules</value>
   </data>
   <data name="HIDE_MAP_POPUP" xml:space="preserve">
     <value>Hide the map's info windows</value>
@@ -211,11 +240,14 @@
   <data name="HOSTNAME" xml:space="preserve">
     <value>Hostname</value>
   </data>
+  <data name="IPINFO_TOKEN" xml:space="preserve">
+    <value>IPInfo Token (Optional)</value>
+  </data>
   <data name="IP_GEO_DATA_PROVIDER" xml:space="preserve">
     <value>IP Geograph Data Provider</value>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Language</value>
+    <value>Language (语言)</value>
   </data>
   <data name="LAST" xml:space="preserve">
     <value>Last</value>
@@ -259,6 +291,18 @@ OR
 
 Would you like to download the NextTrace utility now?</value>
   </data>
+  <data name="MISSING_COMP_TEXT_MACOS" xml:space="preserve">
+    <value>OpenTrace requires the NextTrace utility to function properly. This executable is currently missing.
+Please download NextTrace and set the permissions as follows:
+
+sudo xattr -r -d com.apple.quarantine /path/to/nexttrace
+sudo chown root:admin /path/to/nexttrace
+sudo chmod +sx /path/to/nexttrace
+
+And specify the path in the settings.
+
+Would you like to download the NextTrace utility now?</value>
+  </data>
   <data name="MISSING_SPECIFIED_COMP" xml:space="preserve">
     <value>NextTrace could not be found in "{0}".</value>
   </data>
@@ -283,6 +327,10 @@ Would you like to download the NextTrace utility now?</value>
   <data name="ORGANIZATION" xml:space="preserve">
     <value>Organization</value>
   </data>
+  <data name="OTHER_DATABASE_TIPS" xml:space="preserve">
+    <value>Some data sources can only be selected after setting up an API endpoint/token.
+To use an offline database, please refer to the NextTrace documentation to set it up.</value>
+  </data>
   <data name="PACKET_GROUP_INTERVAL" xml:space="preserve">
     <value>Packet Group Interval</value>
     <comment>--ttl-time</comment>
@@ -293,6 +341,15 @@ Would you like to download the NextTrace utility now?</value>
   </data>
   <data name="PARALLEL_REQ" xml:space="preserve">
     <value>Parallel Requests</value>
+  </data>
+  <data name="POW_PROVIDER" xml:space="preserve">
+    <value>LeoMoeAPI PoW Provider</value>
+  </data>
+  <data name="POW_PROVIDER_LEOMOE" xml:space="preserve">
+    <value>api.leo.moe (Default)</value>
+  </data>
+  <data name="POW_PROVIDER_SAKURA" xml:space="preserve">
+    <value>Nya Labs (China Mainland Optimized)</value>
   </data>
   <data name="PREFERENCES" xml:space="preserve">
     <value>Preferences</value>
@@ -313,7 +370,7 @@ Would you like to download the NextTrace utility now?</value>
     <value>Recv</value>
   </data>
   <data name="RESTART_TO_APPLY" xml:space="preserve">
-    <value>Some settings may require a restart to take effect</value>
+    <value>Some settings will not be applied before the application is restarted</value>
   </data>
   <data name="SAVE" xml:space="preserve">
     <value>Save</value>
@@ -344,6 +401,9 @@ Would you like to download the NextTrace utility now?</value>
   </data>
   <data name="STOP" xml:space="preserve">
     <value>Stop</value>
+  </data>
+  <data name="SYSTEM_DNS_RESOLVER" xml:space="preserve">
+    <value>System DNS</value>
   </data>
   <data name="TIME_MS" xml:space="preserve">
     <value>Time(ms)</value>
