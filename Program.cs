@@ -36,6 +36,7 @@ namespace OpenTrace
 
             UserSettings.ttl_time = "50";
             UserSettings.send_time = "50";
+            UserSettings.gridSizePercentage = "0.37";
 
             new Application(Eto.Platform.Detect).Run(new MainForm());
         }
