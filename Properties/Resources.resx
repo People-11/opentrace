@@ -180,14 +180,14 @@ Would you like to add a firewall rule to allow needed ICMP for NextTrace?</value
   <data name="ERR_MSG" xml:space="preserve">
     <value>Error Message</value>
   </data>
-  <data name="ERR_WRITING_SETTTINGS" xml:space="preserve">
+  <data name="ERR_WRITING_SETTINGS" xml:space="preserve">
     <value>Error writing app settings.</value>
   </data>
   <data name="EXCEPTIONAL_EXIT_MSG" xml:space="preserve">
-    <value>NextTrace process exited unexpectedly. Please refer to the error message to learn more and report this issue to us promptly. Exit Code: </value>
+    <value>NextTrace process exited unexpectedly. Please refer to the error message to learn more and report this issue to us. Exit Code: </value>
   </data>
   <data name="EXC_OUTPUT_FORM_PROMPT" xml:space="preserve">
-    <value>NextTrace generated one or more unexpected outputs during runtime. Please check the output below for troubleshooting. We also encourage you to report this issue to us, which can help us improve OpenTrace.</value>
+    <value>NextTrace generated one or more unexpected outputs during runtime. Please check the output below for troubleshooting. You can refer to the NextTrace Wiki to see if there is already an answer; if you cannot find the answer, please report it to us.</value>
   </data>
   <data name="EXC_OUTPUT_FORM_REPORT" xml:space="preserve">
     <value>Report this issue</value>
@@ -344,6 +344,17 @@ And specify the path in the settings.
 
 Would you like to download the NextTrace utility now?</value>
   </data>
+  <data name="MISSING_COMP_PRIV_MACOS" xml:space="preserve">
+    <value>OpenTrace requires privileges to perform TCP/UDP trace.
+Please set the permissions of NextTrace as follows:
+
+sudo xattr -r -d com.apple.quarantine /path/to/nexttrace
+sudo chown root:admin /path/to/nexttrace
+sudo chmod +sx /path/to/nexttrace</value>
+  </data>
+  <data name="MISSING_PRIV_MACOS" xml:space="preserve">
+    <value>OpenTrace requires privileges to perform TCP/UDP trace</value>
+  </data>
   <data name="MISSING_SPECIFIED_COMP" xml:space="preserve">
     <value>NextTrace could not be found in "{0}".</value>
   </data>
@@ -362,8 +373,8 @@ Would you like to download the NextTrace utility now?</value>
   <data name="NEXTTRACE_PROXY" xml:space="preserve">
     <value>Proxy</value>
   </data>
-  <data name="NO_RDNS" xml:space="preserve">
-    <value>Disable Reverse DNS Lookup</value>
+  <data name="RDNS_MODE" xml:space="preserve">
+    <value>Reverse DNS Lookup Mode</value>
   </data>
   <data name="ORGANIZATION" xml:space="preserve">
     <value>Organization</value>
@@ -460,5 +471,34 @@ To use an offline database, please refer to the NextTrace documentation to set i
   </data>
   <data name="WORST" xml:space="preserve">
     <value>Worst</value>
+  </data>
+  <data name="MACOS_QUARANTINE" xml:space="preserve">
+    <value>OpenTrace is quarantined by macOS, something may be inoperative.
+Please release OpenTrace as follows:
+
+sudo xattr -r -d com.apple.quarantine &lt;drag and drop OpenTrace here&gt;
+
+And restart OpenTrace after execution.</value>
+  </data>
+  <data name="HOMEPAGE" xml:space="preserve">
+    <value>Homepage</value>
+  </data>
+  <data name="RDNS_MODE_ALWAYS" xml:space="preserve">
+    <value>Attempt to Retrieve Full rDNS</value>
+  </data>
+  <data name="RDNS_MODE_DEFAULT" xml:space="preserve">
+    <value>Fast rDNS (Default)</value>
+  </data>
+  <data name="RDNS_MODE_DISABLE" xml:space="preserve">
+    <value>Disable rDNS Query</value>
+  </data>
+  <data name="CHECK_UPDATE_ON_STARTUP" xml:space="preserve">
+    <value>Check update on startup</value>
+  </data>
+  <data name="DOWNLOAD_LATEST" xml:space="preserve">
+    <value>Download latest OpenTrace</value>
+  </data>
+  <data name="UPDATE_AVAILABLE" xml:space="preserve">
+    <value>(Version {0} now available. Download it from the Help menu.)</value>
   </data>
 </root>

@@ -133,7 +133,7 @@ namespace OpenTrace.Properties {
         ///		// 重新计算中心点并画图
         ///		map.clearOverlays(); //清除覆盖物
         ///		var pointlygon_array = []; //折线需要的数组
-        ///		for (var i = 0; i &lt; this. [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///		for (var [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string baiduMap {
             get {
@@ -156,6 +156,15 @@ namespace OpenTrace.Properties {
         public static string CANCEL {
             get {
                 return ResourceManager.GetString("CANCEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Check update on startup 的本地化字符串。
+        /// </summary>
+        public static string CHECK_UPDATE_ON_STARTUP {
+            get {
+                return ResourceManager.GetString("CHECK_UPDATE_ON_STARTUP", resourceCulture);
             }
         }
         
@@ -215,6 +224,15 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Download latest OpenTrace 的本地化字符串。
+        /// </summary>
+        public static string DOWNLOAD_LATEST {
+            get {
+                return ResourceManager.GetString("DOWNLOAD_LATEST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Destination port / Initial seq 的本地化字符串。
         /// </summary>
         public static string DST_PORT_INIT_SEQ {
@@ -262,14 +280,14 @@ namespace OpenTrace.Properties {
         /// <summary>
         ///   查找类似 Error writing app settings. 的本地化字符串。
         /// </summary>
-        public static string ERR_WRITING_SETTTINGS {
+        public static string ERR_WRITING_SETTINGS {
             get {
-                return ResourceManager.GetString("ERR_WRITING_SETTTINGS", resourceCulture);
+                return ResourceManager.GetString("ERR_WRITING_SETTINGS", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   查找类似 NextTrace generated one or more unexpected outputs during runtime. Please check the output below for troubleshooting. We also encourage you to report this issue to us, which can help us improve OpenTrace. 的本地化字符串。
+        ///   查找类似 NextTrace generated one or more unexpected outputs during runtime. Please check the output below for troubleshooting. You can refer to the NextTrace Wiki to see if there is already an answer; if you cannot find the answer, please report it to us. 的本地化字符串。
         /// </summary>
         public static string EXC_OUTPUT_FORM_PROMPT {
             get {
@@ -296,7 +314,7 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
-        ///   查找类似 NextTrace process exited unexpectedly. Please refer to the error message to learn more and report this issue to us promptly. Exit Code:  的本地化字符串。
+        ///   查找类似 NextTrace process exited unexpectedly. Please refer to the error message to learn more and report this issue to us. Exit Code:  的本地化字符串。
         /// </summary>
         public static string EXCEPTIONAL_EXIT_MSG {
             get {
@@ -390,9 +408,7 @@ namespace OpenTrace.Properties {
         ///	addHop: function (hop) {
         ///
         ///		// Parse the JSON string into an object
-        ///		const hopData = JSON.parse(hop);
-        ///
-        ///		conso [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///		const hopData = JSON.parse(h [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string googleMap {
             get {
@@ -442,6 +458,15 @@ namespace OpenTrace.Properties {
         public static string HISTORY {
             get {
                 return ResourceManager.GetString("HISTORY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Homepage 的本地化字符串。
+        /// </summary>
+        public static string HOMEPAGE {
+            get {
+                return ResourceManager.GetString("HOMEPAGE", resourceCulture);
             }
         }
         
@@ -646,6 +671,20 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 OpenTrace is quarantined by macOS, something may be inoperative.
+        ///Please release OpenTrace as follows:
+        ///
+        ///sudo xattr -r -d com.apple.quarantine &lt;drag and drop OpenTrace here&gt;
+        ///
+        ///And restart OpenTrace after execution. 的本地化字符串。
+        /// </summary>
+        public static string MACOS_QUARANTINE {
+            get {
+                return ResourceManager.GetString("MACOS_QUARANTINE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Map Provider 的本地化字符串。
         /// </summary>
         public static string MAP_PROVIDER {
@@ -700,6 +739,20 @@ namespace OpenTrace.Properties {
         }
         
         /// <summary>
+        ///   查找类似 OpenTrace requires privileges to perform TCP/UDP trace.
+        ///Please set the permissions of NextTrace as follows:
+        ///
+        ///sudo xattr -r -d com.apple.quarantine /path/to/nexttrace
+        ///sudo chown root:admin /path/to/nexttrace
+        ///sudo chmod +sx /path/to/nexttrace 的本地化字符串。
+        /// </summary>
+        public static string MISSING_COMP_PRIV_MACOS {
+            get {
+                return ResourceManager.GetString("MISSING_COMP_PRIV_MACOS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 OpenTrace requires the NextTrace utility to function properly. This executable is currently missing.
         ///NextTrace can be placed in either:
         ///1. The same directory as the OpenTrace executable
@@ -729,6 +782,15 @@ namespace OpenTrace.Properties {
         public static string MISSING_COMP_TEXT_MACOS {
             get {
                 return ResourceManager.GetString("MISSING_COMP_TEXT_MACOS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 OpenTrace requires privileges to perform TCP/UDP trace 的本地化字符串。
+        /// </summary>
+        public static string MISSING_PRIV_MACOS {
+            get {
+                return ResourceManager.GetString("MISSING_PRIV_MACOS", resourceCulture);
             }
         }
         
@@ -783,15 +845,6 @@ namespace OpenTrace.Properties {
         public static string NEXTTRACE_PROXY {
             get {
                 return ResourceManager.GetString("NEXTTRACE_PROXY", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Disable Reverse DNS Lookup 的本地化字符串。
-        /// </summary>
-        public static string NO_RDNS {
-            get {
-                return ResourceManager.GetString("NO_RDNS", resourceCulture);
             }
         }
         
@@ -910,6 +963,42 @@ namespace OpenTrace.Properties {
         public static string QUIT {
             get {
                 return ResourceManager.GetString("QUIT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Reverse DNS Lookup Mode 的本地化字符串。
+        /// </summary>
+        public static string RDNS_MODE {
+            get {
+                return ResourceManager.GetString("RDNS_MODE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Attempt to Retrieve Full rDNS 的本地化字符串。
+        /// </summary>
+        public static string RDNS_MODE_ALWAYS {
+            get {
+                return ResourceManager.GetString("RDNS_MODE_ALWAYS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Fast rDNS (Default) 的本地化字符串。
+        /// </summary>
+        public static string RDNS_MODE_DEFAULT {
+            get {
+                return ResourceManager.GetString("RDNS_MODE_DEFAULT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Disable rDNS Query 的本地化字符串。
+        /// </summary>
+        public static string RDNS_MODE_DISABLE {
+            get {
+                return ResourceManager.GetString("RDNS_MODE_DISABLE", resourceCulture);
             }
         }
         
@@ -1054,6 +1143,15 @@ namespace OpenTrace.Properties {
         public static string TRACEROUTING {
             get {
                 return ResourceManager.GetString("TRACEROUTING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 (Version {0} now available. Download it from the Help menu.) 的本地化字符串。
+        /// </summary>
+        public static string UPDATE_AVAILABLE {
+            get {
+                return ResourceManager.GetString("UPDATE_AVAILABLE", resourceCulture);
             }
         }
         

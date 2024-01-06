@@ -41,7 +41,7 @@ namespace OpenTrace
 
         public MainForm()
         {
-            Title = Resources.APPTITLE;
+            Title = Resources.APPTITLE + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             MinimumSize = new Size(960, 720);
 
             // 创建菜单项
@@ -54,8 +54,17 @@ namespace OpenTrace
             var quitCommand = new Command { MenuText = Resources.QUIT, Shortcut = Application.Instance.CommonModifier | Keys.Q };
             quitCommand.Executed += (sender, e) => Application.Instance.Quit();
 
-            var aboutCommand = new Command { MenuText = Resources.ABOUT };
-            aboutCommand.Executed += (sender, e) => Process.Start(new ProcessStartInfo("https://github.com/Archeb/opentrace") { UseShellExecute = true });
+            var OTHomePageCommand = new Command { MenuText = "OpenTrace " + Resources.HOMEPAGE };
+            OTHomePageCommand.Executed += (sender, e) => Process.Start(new ProcessStartInfo("https://github.com/Archeb/opentrace") { UseShellExecute = true });
+
+            var DownloadLatestCommand = new Command { MenuText = Resources.DOWNLOAD_LATEST };
+            DownloadLatestCommand.Executed += (sender, e) => Process.Start(new ProcessStartInfo("https://github.com/Archeb/opentrace/releases") { UseShellExecute = true });
+
+            var NTHomePageCommand = new Command { MenuText = "NextTrace " + Resources.HOMEPAGE };
+            NTHomePageCommand.Executed += (sender, e) => Process.Start(new ProcessStartInfo("https://www.nxtrace.org/") { UseShellExecute = true });
+
+            var NTWikiCommand = new Command { MenuText = "NextTrace Wiki" };
+            NTWikiCommand.Executed += (sender, e) => Process.Start(new ProcessStartInfo("https://github.com/nxtrace/NTrace-core/wiki") { UseShellExecute = true });
 
             var preferenceCommand = new Command { MenuText = Resources.PREFERENCES, Shortcut = Application.Instance.CommonModifier | Keys.Comma };
             preferenceCommand.Executed += (sender, e) =>
@@ -78,7 +87,10 @@ namespace OpenTrace
                             quitCommand
                         } },
                      new SubMenuItem { Text = Resources.HELP , Items = {
-                             aboutCommand
+                             OTHomePageCommand,
+                             DownloadLatestCommand,
+                             NTHomePageCommand,
+                             NTWikiCommand
                          } }
                 }
             };
@@ -191,8 +203,8 @@ namespace OpenTrace
                 ResetMap();
             };
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && UserSettings.hideAddICMPFirewallRule != true) tryAddICMPFirewallRule();
-
+            platformChecks();
+            
             // 绑定窗口事件
             SizeChanged += MainForm_SizeChanged;
             MouseDown += Dragging_MouseDown;
@@ -238,7 +250,40 @@ namespace OpenTrace
             };
             Content = layout;
 
+            // check update async
+            Task.Run(() => CheckUpdateAsync());
+
             HostInputBox.Focus(); // 自动聚焦输入框
+        }
+
+        private void CheckUpdateAsync()
+        {
+            if(!UserSettings.checkUpdateOnStartup) return;
+            var httpClient = new System.Net.Http.HttpClient
+            {
+                BaseAddress = new Uri("https://api.github.com/repos/Archeb/opentrace/releases/latest")
+            };
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "OpenTrace");
+            var response = httpClient.GetAsync("").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    var definition = new { tag_name = "" };
+                    var json = JsonConvert.DeserializeAnonymousType(result, definition);
+                    string latestVersion = json.tag_name;
+                    string currentVersion = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                    if (latestVersion != currentVersion)
+                    {
+                        App.app.Invoke(() =>
+                        {
+                            App.app.MainForm.Title += " " + string.Format(Resources.UPDATE_AVAILABLE, latestVersion);
+                        });
+                    }
+                }
+                catch { }
+            }
         }
 
         private void LoadDNSResolvers()
@@ -261,6 +306,21 @@ namespace OpenTrace
             dnsResolverSelection.SelectedIndex = 0;
         }
 
+        // 初始化期间进行平台特定检查
+        private void platformChecks()
+        {
+            
+            // macOS 被隔离，请求释放
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && AppDomain.CurrentDomain.BaseDirectory.StartsWith("/private/var/folders"))
+            {
+                App.app.Invoke(() => {
+                    MessageBox.Show(Resources.MACOS_QUARANTINE);
+                });
+            }
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && UserSettings.hideAddICMPFirewallRule != true) tryAddICMPFirewallRule();
+        }
+        
         private void tryAddICMPFirewallRule()
         {
             // 提示 Windows 用户添加防火墙规则放行 ICMP 
@@ -401,6 +461,21 @@ namespace OpenTrace
             {
                 ResolvedIPSelection.Visible = false; // 隐藏 IP 选择框
                 IPAddress userInputAddress;
+                // 去除输入框两侧的空格
+                HostInputBox.Text = HostInputBox.Text.Trim();
+
+                Uri uri;
+                if (Uri.TryCreate(HostInputBox.Text, UriKind.Absolute, out uri) && uri.Host != "")
+                {
+                    // 是合法的 URL
+                    HostInputBox.Text = uri.Host;
+                }
+
+                // 如果有冒号而且有点(IPv4)，去除冒号后面的内容
+                if (HostInputBox.Text.IndexOf(":") != -1 && HostInputBox.Text.IndexOf(".") != -1)
+                {
+                    HostInputBox.Text = HostInputBox.Text.Split(':')[0];
+                }
                 if (IPAddress.TryParse(HostInputBox.Text, out userInputAddress))
                 {
                     // 是合法的 IPv4 / IPv6，把程序处理后的IP放回文本框
@@ -408,16 +483,9 @@ namespace OpenTrace
                     readyToUseIP = userInputAddress.ToString();
                     Title = Resources.APPTITLE + ": " + readyToUseIP;
                 }
-                else
-                {
+                else { 
                     try
                     {
-                        Uri uri;
-                        if (Uri.TryCreate(HostInputBox.Text, UriKind.Absolute, out uri) && uri.Host != "")
-                        {
-                            // 是合法的 URL
-                            HostInputBox.Text = uri.Host;
-                        }
                         // 需要域名解析
                         Title = Resources.APPTITLE + ": " + HostInputBox.Text;
                         IPAddress[] resolvedAddresses = ResolveHost(HostInputBox.Text);
@@ -679,7 +747,7 @@ namespace OpenTrace
         {
             try
             {
-                mapWebView.ExecuteScript(@"window.opentrace.focusHop(" + hopNo + ");");
+                mapWebView.ExecuteScriptAsync(@"window.opentrace.focusHop(" + hopNo + ");");
             }
             catch (Exception e)
             {
@@ -694,13 +762,13 @@ namespace OpenTrace
                 switch (mapWebView.Url.Host)
                 {
                     case "geo-devrel-javascript-samples.web.app":
-                        mapWebView.ExecuteScript(OpenTrace.Properties.Resources.googleMap);
+                        mapWebView.ExecuteScriptAsync(OpenTrace.Properties.Resources.googleMap);
                         break;
                     case "lbs.baidu.com":
-                        mapWebView.ExecuteScript(OpenTrace.Properties.Resources.baiduMap);
+                        mapWebView.ExecuteScriptAsync(OpenTrace.Properties.Resources.baiduMap);
                         break;
                 }
-                mapWebView.ExecuteScript("window.opentrace.reset(" + UserSettings.hideMapPopup.ToString().ToLower() + ")");
+                mapWebView.ExecuteScriptAsync("window.opentrace.reset(" + UserSettings.hideMapPopup.ToString().ToLower() + ")");
             } catch (Exception e)
             {
                 MessageBox.Show($"Message: ${e.Message} \nSource: ${e.Source} \nStackTrace: ${e.StackTrace}", "Exception Occurred");
