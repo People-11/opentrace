@@ -65,7 +65,7 @@ namespace OpenTrace
             else
             {
                 if (UserSettings.mapProvider == "" && UserSettings.mapProvider != null) UserSettings.mapProvider = "google";
-                if (UserSettings.POWProvider == "" && UserSettings.POWProvider != null) UserSettings.POWProvider = "api.leo.moe";
+                if (UserSettings.POWProvider == "" && UserSettings.POWProvider != null) UserSettings.POWProvider = "sakura"; //api.leo.moe
             }
 
             App.app = new Application(Eto.Platform.Detect);
