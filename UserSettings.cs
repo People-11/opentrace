@@ -78,7 +78,10 @@ namespace OpenTrace
 
         [Setting(Name = "NextTraceProxy", Default = "")]
         public static string NextTraceProxy { get; set; }
-        
+
+        [Setting(Name = "IPAPI_Base", Default = "")]
+        public static string IPAPI_Base { get; set; }
+
         [Setting(Name = "hideAddICMPFirewallRule", Default = false)]
         public static bool hideAddICMPFirewallRule { get; set; }
 
@@ -126,5 +129,14 @@ namespace OpenTrace
 
         [Setting(Name = "maskedHopsMode", Default = "ip_half")]
         public static string maskedHopsMode { get; set; }
+
+        [Setting(Name = "selectedDnsResolver", Default = "system")]
+        public static string selectedDnsResolver { get; set; }
+
+        [Setting(Name = "selectedProtocol", Default = "")]
+        public static string selectedProtocol { get; set; }
+
+        [Setting(Name = "selectedDataProvider", Default = "")]
+        public static string selectedDataProvider { get; set; }
     }
 }

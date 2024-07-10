@@ -149,12 +149,15 @@
 											<Label Text="{x:Static resource:Resources.POW_PROVIDER}"></Label>
 											<DropDown x:Name="POWProvider" SelectedIndex="0">
 												<ListItem Text="{x:Static resource:Resources.POW_PROVIDER_LEOMOE}" Key="api.leo.moe"></ListItem>
-												<ListItem Text="{x:Static resource:Resources.POW_PROVIDER_SAKURA}" Key="sakura"></ListItem>
 											</DropDown>
 										</TableRow>
 										<TableRow>
 											<Label Text="{x:Static resource:Resources.NEXTTRACE_PROXY}"></Label>
 											<TextBox x:Name="NextTraceProxy" PlaceholderText="protocol://username:password@host:port" Text=""></TextBox>
+										</TableRow>
+										<TableRow>
+											<Label Text="API Base"></Label>
+											<TextBox x:Name="IPAPI_Base" Text=""></TextBox>
 										</TableRow>
 										<TableRow>
 											<Label Text="IPInsight Token"></Label>
