@@ -1,6 +1,8 @@
 name: build-windows
 
 on:
+  watch:
+    type: started
   push:
     branches:
       - master

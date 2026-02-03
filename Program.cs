@@ -84,6 +84,8 @@ namespace OpenTrace
             }
 
             App.app = new Application(Eto.Platform.Detect);
+            UserSettings.ttl_time = "50";
+            UserSettings.send_time = "50";
             App.app.Run(new MainForm());
         }
 
