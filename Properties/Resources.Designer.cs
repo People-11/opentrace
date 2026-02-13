@@ -184,6 +184,13 @@ namespace OpenTrace.Properties {
             }
         }
         
+        ///   查找类似 Clear History 的本地化字符串。
+        public static string CLEAR_HISTORY {
+            get {
+                return ResourceManager.GetString("CLEAR_HISTORY", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   查找类似 Combine Geography and Organization into a single column 的本地化字符串。
         /// </summary>

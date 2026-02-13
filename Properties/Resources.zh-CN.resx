@@ -155,6 +155,9 @@
   <data name="CLOSE" xml:space="preserve">
     <value>关闭</value>
   </data>
+  <data name="CLEAR_HISTORY" xml:space="preserve">
+    <value>清空历史记录</value>
+  </data>
   <data name="COMBINE_GEO_ORG" xml:space="preserve">
     <value>把地理位置和组织信息合为一栏</value>
   </data>

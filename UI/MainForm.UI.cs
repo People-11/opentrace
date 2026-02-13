@@ -141,6 +141,17 @@ namespace OpenTrace.UI
                 }
             };
 
+            var clearHistoryCommand = new Command { MenuText = Resources.CLEAR_HISTORY };
+            clearHistoryCommand.Executed += (sender, e) =>
+            {
+               if(HostInputBox != null)
+               {
+                    HostInputBox.Items.Clear();
+                    UserSettings.traceHistory = "";
+                    UserSettings.SaveSettings();
+               }
+            };
+
             // Language Menu
             var languageMenu = new ButtonMenuItem { Text = Resources.LANGUAGE };
             var languages = new[]
@@ -210,6 +221,7 @@ namespace OpenTrace.UI
                     new SeparatorMenuItem(),
                     languageMenu,
                     preferenceCommand,
+                    clearHistoryCommand,
                     new SeparatorMenuItem(),
                     quitCommand
                 }
